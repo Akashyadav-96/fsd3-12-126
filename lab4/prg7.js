@@ -6,7 +6,7 @@ const server = http.createServer((req, res) => {
   } else if ((req.url === "/api/users", req.method === "POST")) {
     res.end(JSON.stringify({ msg: "add user" }));
   } else if ((req.url === "/api/users/1", req.method === "GET")) {
-    res.end(JSON.stringify({ msg: "single user with Id 1" }));
+    res.end(JSON.stringify({ msg: "single user with id 1" }));
   } else if ((req.url === "/api/users/1", req.method === "PUT")) {
     res.end(JSON.stringify({ msg: "update user 1" }));
   } else if ((req.url === "/api/users/1", req.method === "DELETE")) {
@@ -17,6 +17,4 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(3000, () => {
-  console.log("prg7 is running on http://localhost:3000");
-});
+server.listen(3000, () => console.log("prg7 is running"));

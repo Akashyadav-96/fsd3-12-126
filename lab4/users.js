@@ -1,4 +1,4 @@
-// We use in memory data base
+// We use in-memory database
 let users = [
   {
     id: 1,
@@ -17,3 +17,10 @@ let users = [
 let nextId = 3;
 
 export const getUsers = () => users;
+
+export const addUser = (user) => {
+  user.id = nextId++;
+  users.push(user);
+
+  return user;
+};

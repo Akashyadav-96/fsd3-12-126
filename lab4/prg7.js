@@ -1,12 +1,18 @@
 import http from "http";
-import { getUsers, addUser } from "./users.js";
+import {
+  getAllUsers,
+  getUsersById,
+  updateUser,
+  deleteUser,
+  addUser,
+} from "./users.js";
 
 const server = http.createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   // GET all users
   if (req.url === "/api/users" && req.method === "GET") {
-    res.end(JSON.stringify(getUsers()));
+    res.end(JSON.stringify(getAllUsers()));
 
     // POST create user
   } else if (req.url === "/api/users" && req.method === "POST") {
@@ -28,17 +34,79 @@ const server = http.createServer((req, res) => {
       );
     });
 
-    // GET single user
-  } else if (req.url === "/api/users/1" && req.method === "GET") {
-    res.end(JSON.stringify({ msg: "single user with id 1" }));
+    // Routes with ID
+  } else if (req.url.startsWith("/api/users/")) {
+    const pid = Number(req.url.split("/")[3]);
 
-    // PUT user
-  } else if (req.url === "/api/users/1" && req.method === "PUT") {
-    res.end(JSON.stringify({ msg: "update user 1" }));
+    // GET user by ID
+    if (req.method === "GET") {
+      const user = getUsersById(pid);
 
-    // DELETE user
-  } else if (req.url === "/api/users/1" && req.method === "DELETE") {
-    res.end(JSON.stringify({ msg: "remove 1" }));
+      if (!user) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ msg: "User not found" }));
+      }
+
+      res.end(JSON.stringify(user));
+
+      // PUT update user
+    } else if (req.method === "PUT") {
+      let body = "";
+
+      req.on("data", (chunk) => {
+        body += chunk;
+      });
+
+      req.on("end", () => {
+        console.log("PUT BODY:", body);
+
+        try {
+          const updateData = JSON.parse(body);
+
+          const updatedUser = updateUser(pid, updateData);
+
+          if (!updatedUser) {
+            res.statusCode = 404;
+            return res.end(
+              JSON.stringify({
+                msg: "User not found",
+              }),
+            );
+          }
+
+          res.statusCode = 200;
+
+          res.end(
+            JSON.stringify({
+              msg: "user updated",
+              updatedUser,
+            }),
+          );
+        } catch (error) {
+          console.log("JSON ERROR:", error.message);
+
+          res.statusCode = 400;
+
+          res.end(
+            JSON.stringify({
+              msg: "Invalid JSON",
+              error: error.message,
+            }),
+          );
+        }
+      });
+
+      // DELETE user
+    } else if (req.method === "DELETE") {
+      const deleted = deleteUser(pid);
+
+      if (!deleted) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ msg: "User not found" }));
+      }
+
+      res.end(JSON.stringify({ msg: "user deleted" }));
+    }
 
     // 404
   } else {

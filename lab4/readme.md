@@ -29,3 +29,18 @@ script
   third party API Tester like
   postman, thunder client, echo
   api etc
+
+## request type
+
+1. GET → Read / Fetch
+  - Get All → GET /users → Need all/multiple records
+  - Get By ID → GET /users/10 → Need a particular record
+2. POST → Create
+  - POST /users → Create a new record
+  - Data is usually sent in the request body
+3. PUT → Complete Update
+  - PUT /users/10 → Update/replace the complete record
+4. PATCH → Partial Update
+  - PATCH /users/10 → Update only specific fields
+5. DELETE → Delete
+  - DELETE /users/10 → Delete a particular record

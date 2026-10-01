@@ -1,4 +1,4 @@
-// We use in-memory database
+// In-memory database
 let users = [
   {
     id: 1,
@@ -16,11 +16,50 @@ let users = [
 
 let nextId = 3;
 
-export const getUsers = () => users;
+// GET all users
+export const getAllUsers = () => {
+  return users;
+};
 
+// GET user by ID
+export const getUsersById = (pid) => {
+  return users.find((user) => user.id === pid);
+};
+
+// POST add user
 export const addUser = (user) => {
   user.id = nextId++;
   users.push(user);
 
   return user;
+};
+
+// PUT update user
+export const updateUser = (pid, updateData) => {
+  const index = users.findIndex((user) => user.id === pid);
+
+  if (index === -1) {
+    return false;
+  }
+
+  users[index] = {
+    ...users[index],
+    ...updateData,
+    id: pid,
+  };
+
+  return users[index];
+};
+
+// DELETE user
+export const deleteUser = (pid) => {
+  const index = users.findIndex((user) => user.id === pid);
+
+  if (index === -1) {
+    return false;
+  }
+
+  users.splice(index, 1);
+
+  return true;
 };
